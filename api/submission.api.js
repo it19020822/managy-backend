@@ -1,5 +1,5 @@
 let Submission = require('../models/submissionModel');
-const {getAllDocuments} = require('./document.api');
+const {getAllDocuments} = require('./file.api');
 
 function createSubmission(body) {
 

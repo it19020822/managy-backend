@@ -1,4 +1,4 @@
-const Document = require('../models/documentModel');
+const Document = require('../models/fileModel');
 const cloudinary = require('../config/cloudinary');
 
 function addDocument(payload){

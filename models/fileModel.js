@@ -1,20 +1,17 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 
-const documentSchema = new schema({
+const fileSchema = new schema({
     userId:{
         type:String,
-        require:true
-    },
-    activityId:{
-        type:String,
+        ref: "User",
         require:true
     },
     type:{
         type:String,
-        require:true
+        require:false
     },
-    status:{
+    publicId:{
         type:String,
         require:true
     },  
@@ -26,4 +23,4 @@ const documentSchema = new schema({
     timestamps: true
 })
 
-module.exports =document= mongoose.model('document',documentSchema);
+module.exports =document= mongoose.model('file',fileSchema);
