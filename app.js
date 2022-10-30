@@ -6,7 +6,7 @@ const conferenceRouter = require('./routes/conferenceRoutes');
 const userRouter = require('./routes/userRoutes');
 const workshopRouter = require('./routes/workshopRoutes');
 const fileRouter = require('./routes/fileRoutes');
-const paymentRouter = require('./routes/paymentRoutes');
+const messageRouter = require('./routes/messageRoutes');
 const submissionRouter = require('./routes/submissionRouter');
 const { url } = require('./config/db');
 
@@ -34,7 +34,7 @@ app.use('/workshop', workshopRouter); //workshop routes
 
 app.use('/file',fileRouter); //file routes
 
-app.use('/payment', paymentRouter); //payment routes
+app.use('/message', messageRouter); //message routes
 
 app.use('/submission' ,submissionRouter);
 
