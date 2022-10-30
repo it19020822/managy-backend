@@ -5,11 +5,12 @@ const mongoose = require('mongoose');
 const conferenceRouter = require('./routes/conferenceRoutes');
 const userRouter = require('./routes/userRoutes');
 const workshopRouter = require('./routes/workshopRoutes');
-const documentRouter = require('./routes/documentRoutes');
+const fileRouter = require('./routes/fileRoutes');
 const paymentRouter = require('./routes/paymentRoutes');
 const submissionRouter = require('./routes/submissionRouter');
+const { url } = require('./config/db');
 
-mongoose.connect(process.env.DB_KEY||'&w=majority', {
+mongoose.connect(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
@@ -31,7 +32,7 @@ app.use('/conference',conferenceRouter); // conference routes
 
 app.use('/workshop', workshopRouter); //workshop routes
 
-app.use('/document',documentRouter); //document routes
+app.use('/file',fileRouter); //file routes
 
 app.use('/payment', paymentRouter); //payment routes
 

@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const {addDocument,updateDocument,deleteDocument,getDoucmentByUserId,getAllDocuments,updateDocumentIsApprove}=require('../api/document.api')
+const {addDocument,updateDocument,deleteDocument,getDoucmentByUserId,getAllDocuments,updateDocumentIsApprove}=require('../api/file.api')
 
 
 router.post('/', async (req,res)=>{
