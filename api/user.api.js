@@ -1,6 +1,8 @@
- let User = require("../models/userModel");
+let User = require("../models/userModel");
 const passwordHash = require('password-hash');
 var nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
+
  function createuser(body) {
  
    return new Promise((resolve, reject) => {
@@ -102,6 +104,7 @@ var nodemailer = require('nodemailer');
      })
    })
  }
+
  function getEmailAndPassCode(emails){
    return new Promise((resolve,reject)=>{
     console.log('in getEmailAndPassCode');
