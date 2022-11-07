@@ -1,20 +1,18 @@
-const router  = require('express').Router();
-const { createuser, getAllUsers, getUserById ,deleteUserById, updateUserById,getUsetByEmailAndPassword,getEmailAndPassCode }  = require('../api/user.api');
+const router = require('express').Router();
+const { createuser, getAllUsers, getUserById, deleteUserById, updateUserById, getUsetByEmailAndPassword, getEmailAndPassCode } = require('../api/user.api');
 const jsonwebtoken = require('jsonwebtoken');
+
 //add user
 router.post('/add', (req, res) => {
-
     createuser(req.body).then((newUser) => {
         const token = jsonwebtoken.sign({
-            _id:newUser._id,
-            name :newUser.name,
-            email : newUser.email,
-            gender : newUser.gender,
-            type : newUser.type,
-            phoneNumber :newUser.phoneNumber
-        },"jwtSecret")
+            _id: newUser._id,
+            name: newUser.name,
+            email: newUser.email,
+            gender: newUser.gender,
+            type: newUser.type
+        }, "jwtSecret")
         res.json(token);
-
     }).catch((err) => {
         console.log(err);
     })
@@ -23,54 +21,47 @@ router.post('/add', (req, res) => {
 
 //get all users
 router.get('/', (req, res) => {
-
     getAllUsers().then((docs) => {
         res.json(docs);
     }).catch((err) => {
         console.log('err: ', err);
     })
-
 })
 
 //get All users by id
-
 router.get('/:id', (req, res) => {
     getUserById(req.params.id).then((user) => {
         res.json(user);
     })
 })
 
-router.post('/getUser',(req,res)=>{
+router.post('/getUser', (req, res) => {
     console.log('router getuser');
-    getUsetByEmailAndPassword(req.body).then(user=>{
+    getUsetByEmailAndPassword(req.body).then(user => {
         console.log('in router get');
         console.log(user);
-        if(user ===null){
+        if (user === null) {
             res.json(null);
         }
-        else{
+        else {
             const token = jsonwebtoken.sign({
-                _id:user._id,
-                name :user.name,
-                email : user.email,
-                gender : user.gender,
-                type : user.type,
-                phoneNumber :user.phoneNumber,
-            },"jwtSecret")
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                gender: user.gender,
+                type: user.type
+            }, "jwtSecret")
             const password = user.password;
             console.log('in router get');
-            res.json({token,password});
+            res.json({ token, password });
         }
-        
-        
-    }).catch(err=>{
-        console.log('err pasindu');
+    }).catch(err => {
+        console.log('err');
         console.log(err);
     })
 })
 
 router.delete('/:id', (req, res) => {
-    
     deleteUserById(req.params.id).then((user) => {
         res.json(
             user.name + ' is deleted'
@@ -79,51 +70,44 @@ router.delete('/:id', (req, res) => {
 })
 
 router.post('/update/:id', (req, res) => {
-
-
- console.log('in router post')
- console.log(req.body)
-    updateUserById(req.params.id,req.body)
+    console.log('in router post')
+    console.log(req.body)
+    updateUserById(req.params.id, req.body)
         .then((user) => {
             console.log('in router post in then')
             const token = jsonwebtoken.sign({
-                _id:user._id,
-                name :user.name,
-                email : user.email,
-                gender : user.gender,
-                type : user.type,
-                phoneNumber :user.phoneNumber
-            },"jwtSecret")
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                gender: user.gender,
+                type: user.type
+            }, "jwtSecret")
             res.json(
-                {token}
+                { token }
             )
         })
 })
 
-router.post('/getCode',(req,res)=>{
+router.post('/getCode', (req, res) => {
     console.log('router post');
     console.log(req.body);
-    getEmailAndPassCode(req.body.email).then(details=>{
-        if(details._id){
+    getEmailAndPassCode(req.body.email).then(details => {
+        if (details._id) {
             console.log('router post in getEmail')
             const token = jsonwebtoken.sign({
-                _id:details._id,
-                email : details.email,
-                code:details.code
-            },"jwtSecret")
-            res.json({token});
+                _id: details._id,
+                email: details.email,
+                code: details.code
+            }, "jwtSecret")
+            res.json({ token });
         }
         res.json(null)
-       
-    }).catch((err)=>{
+    }).catch((err) => {
         console.log('err');
         console.log(err);
         res.json(null)
     })
 })
-// router.put('/updatePassword',(req,res)=>{
-
-// })
 
 
 module.exports = router;
