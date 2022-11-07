@@ -1,56 +1,39 @@
 const router = require('express').Router();
+const formidable = require('formidable');
+const { base64_encode } = require('../utils/fileUtil');
 
-const {addDocument,updateDocument,deleteDocument,getDoucmentByUserId,getAllDocuments,updateDocumentIsApprove}=require('../api/file.api')
+const { upload, remove } = require('../api/uploader.api');
+const filePath = "documents";
 
+const { insertDocument } = require('../api/file.api')
 
-router.post('/', async (req,res)=>{
+router.post('/', async (req, res, next) => {
 
-    addDocument(req.body).then((newDoc)=>{
-        res.json(newDoc);
-    }).catch((err)=>{
-        res.status(err);
-    })
+    const form = formidable({ multiples: true });
+
+    form.parse(req, (err, fields, files) => {
+
+        if (err) {
+            console.log(err);
+            next(err);
+            return;
+        }
+
+        const base64File = base64_encode(files.file);
+
+        upload(base64File, filePath).then((doc) => {
+
+            insertDocument(doc).then((result) => {
+                res.json("File upload successful!");
+            }).catch((err) => {
+                res.status(500).json(err);
+            })
+        }).catch((error) => {
+            res.status(500).json(error);
+        });
+
+    });
+
 });
 
-router.post('/update/:id', (req,res)=>{
-
-    updateDocument(req.body,req.params.id).then((doc)=>{
-        res.json(doc)
-    }).catch((err)=>{
-        console.log(err)
-    })
-})
-router.post('/update/isApprove/:id', (req,res)=>{
-
-    updateDocumentIsApprove(req.body,req.params.id).then((doc)=>{
-        res.json(doc)
-    }).catch((err)=>{
-        console.log(err)
-    })
-})
-router.delete('/delete/:id',(req,res)=>{
-    deleteDocument(req.params.id).then((doc)=>{
-        res.json(doc)
-    }).catch((err)=>{
-        console.log(err)
-    })
-})
-router.get('/:id',(req,res)=>{
-    getDoucmentByUserId(req.params.id).then(documents=>{
-        res.json(documents)
-    }).catch(err=>{
-        console.log(err)
-    })
-})
-
-router.get('/', (req, res) => {
-
-    getAllDocuments().then((docs) => {
-        res.json(docs);
-    }).catch((err) => {
-        console.log('err: ', err);
-    })
-
-})
-
-module.exports=router;
+module.exports = router;
