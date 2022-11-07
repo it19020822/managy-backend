@@ -8,35 +8,34 @@ const workshopRouter = require('./routes/workshopRoutes');
 const fileRouter = require('./routes/fileRoutes');
 const messageRouter = require('./routes/messageRoutes');
 const submissionRouter = require('./routes/submissionRouter');
-const { url } = require('./config/db');
+const uri = require('./config/db');
 
-mongoose.connect(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true
-}, () => {
-    console.log("Connected to database");
+mongoose.connect(uri, (err) => {
+    if (err)
+        console.log(err);
+    else
+        console.log("Connected to database");
 });
 
 let app = express();
 
-app.use(express.json({limit: '50mb'}));
+app.use(express.json({ limit: '50mb' }));
 
-app.use(express.urlencoded({limit: '50mb', extended: true}))
+app.use(express.urlencoded({ limit: '50mb', extended: true }))
 
 app.use(cors());
 
 app.use('/user', userRouter);//user routes
 
-app.use('/conference',conferenceRouter); // conference routes 
+app.use('/conference', conferenceRouter); // conference routes 
 
 app.use('/workshop', workshopRouter); //workshop routes
 
-app.use('/file',fileRouter); //file routes
+app.use('/file', fileRouter); //file routes
 
 app.use('/message', messageRouter); //message routes
 
-app.use('/submission' ,submissionRouter);
+app.use('/submission', submissionRouter);
 
 /**
  * 
