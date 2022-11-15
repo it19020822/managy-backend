@@ -2,35 +2,51 @@ const router  = require('express').Router();
 const { createuser, getAllUsers, getUserById ,deleteUserById, updateUserById,getUsetByEmailAndPassword,getEmailAndPassCode }  = require('../api/user.api');
 const jsonwebtoken = require('jsonwebtoken');
 const passport = require('passport');
+let User = require("../models/userModel");
+
+
+
 
 let users = [
-    {
-        _id: '636938e03170ad59f2e00503',
-        name: 'testName6',
-        email: 'testEmail6',
-        password: 'testPassword',
-        emailToken: 'token',
-        gender: 'male',
-        isVerified: true,
-        type: '',
-        createdAt: '2022-11-07T16:57:04.321Z',
-        updatedAt: '2022-11-07T16:57:04.321Z',
-        __v: 0
-    },
-    {
-        _id: '636938e63170ad59f2e00506',
-        name: 'testName7',
-        email: 'testEmail7',
-        password: 'testPassword',
-        emailToken: 'token',
-        gender: 'male',
-        isVerified: true,
-        type: '',
-        createdAt: '2022-11-07T16:57:10.582Z',
-        updatedAt: '2022-11-07T16:57:10.582Z',
-        __v: 0
-    }
+    // {
+    //     _id: '636938e03170ad59f2e00503',
+    //     name: 'testName6',
+    //     email: 'testEmail6',
+    //     password: 'testPassword',
+    //     emailToken: 'token',
+    //     gender: 'male',
+    //     isVerified: true,
+    //     type: '',
+    //     createdAt: '2022-11-07T16:57:04.321Z',
+    //     updatedAt: '2022-11-07T16:57:04.321Z',
+    //     __v: 0
+    // },
+    // {
+    //     _id: '636938e63170ad59f2e00506',
+    //     name: 'testName7',
+    //     email: 'testEmail7',
+    //     password: 'testPassword',
+    //     emailToken: 'token',
+    //     gender: 'male',
+    //     isVerified: true,
+    //     type: '',
+    //     createdAt: '2022-11-07T16:57:10.582Z',
+    //     updatedAt: '2022-11-07T16:57:10.582Z',
+    //     __v: 0
+    // }
 ];
+
+const fetchUsers = () => {
+    return new Promise((resolve, reject) => {
+        User.find((err, docs) => {
+            users = docs;
+        //   err ? reject(err) : resolve(docs);
+        });
+      });
+}
+
+fetchUsers();
+
 const initializePassport = require('../config/passport-config');
 initializePassport(
     passport,
@@ -57,6 +73,8 @@ router.post('/add', (req, res) => {
         console.log(err);
     })
 })
+
+
 
 //get all users
 router.get('/',checkAuthenticated, (req, res) => {
