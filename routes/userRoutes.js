@@ -158,15 +158,14 @@ router.post('/getCode',(req,res)=>{
     })
 })
 
-router.get('/api/login', (req,res) => {
-
-return passport.authenticate('local', {
+router.get('/api/login',
+ passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/api/login',
     failureFlash: true
 })
 
-})
+)
 
 router.delete('/api/logout', (req, res) => {
     req.logout(function (err) {

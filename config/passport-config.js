@@ -3,8 +3,12 @@ const bcrypt = require('bcrypt');
 
 function initialize(passport, getUserByEmail, getUserById) {
 
+    console.log('passport config called');
+
 
     const authenticateUser = async (email, password, done) => {
+        console.log('password: ', password);
+        console.log('email: ', email);
         const user = getUserByEmail(email)
         if (user == null) {
             console.log('user is null ');
