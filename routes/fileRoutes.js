@@ -5,35 +5,48 @@ const { base64_encode } = require('../utils/fileUtil');
 const { upload, remove } = require('../api/uploader.api');
 const filePath = "documents";
 
-const { insertDocument } = require('../api/file.api')
+const { insertDocument } = require('../api/file.api');
+const { MANAGER } = require('../utils/constants');
 
-router.post('/', async (req, res, next) => {
+// endpoint to upload new files
+router.post('/' , async (req, res, next) => {
 
-    const form = formidable({ multiples: true });
+    // change this when auth is implemented
+    if (isAllowed({ type: MANAGER })) {
 
-    form.parse(req, (err, fields, files) => {
+        const form = formidable({ multiples: true });
 
-        if (err) {
-            console.log(err);
-            next(err);
-            return;
-        }
+        form.parse(req, (err, fields, files) => {
 
-        const base64File = base64_encode(files.file);
+            if (err) {
+                console.log(err);
+                next(err);
+                return;
+            }
 
-        upload(base64File, filePath).then((doc) => {
+            const base64File = base64_encode(files.file);
 
-            insertDocument(doc).then((result) => {
-                res.json("File upload successful!");
-            }).catch((err) => {
-                res.status(500).json(err);
-            })
-        }).catch((error) => {
-            res.status(500).json(error);
+            upload(base64File, filePath).then((doc) => {
+
+                insertDocument(doc, null).then((result) => {
+                    res.json("File upload successful!");
+                }).catch((err) => {
+                    res.status(500).json(err);
+                })
+            }).catch((error) => {
+                res.status(500).json(error);
+            });
+
         });
-
-    });
+    }
+    else
+        res.status(401).json("Unauthorized!");
 
 });
+
+// checks if the user is allowed to access the file api endpoints
+const isAllowed = (user) => {
+    return user.type === MANAGER ? true : false
+}
 
 module.exports = router;
