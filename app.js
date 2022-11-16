@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const conferenceRouter = require('./routes/conferenceRoutes');
+const invitationRouter = require('./routes/invitationRoute');
 const userRouter = require('./routes/userRoutes');
 const workshopRouter = require('./routes/workshopRoutes');
 const fileRouter = require('./routes/fileRoutes');
@@ -53,6 +54,8 @@ app.use('/file', fileRouter); //file routes
 app.use('/message', messageRouter); //message routes
 
 app.use('/submission', submissionRouter);
+
+app.use('/invitation', invitationRouter);
 
 /**
  * 
