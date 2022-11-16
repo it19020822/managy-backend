@@ -1,8 +1,59 @@
 const router = require('express').Router();
 const { createuser, getAllUsers, getUserById, deleteUserById, updateUserById, getUsetByEmailAndPassword, getEmailAndPassCode } = require('../api/user.api');
 const jsonwebtoken = require('jsonwebtoken');
+const passport = require('passport');
+let User = require("../models/userModel");
 
-//add user
+
+let users = [
+    // {
+    //     _id: '636938e03170ad59f2e00503',
+    //     name: 'testName6',
+    //     email: 'testEmail6',
+    //     password: 'testPassword',
+    //     emailToken: 'token',
+    //     gender: 'male',
+    //     isVerified: true,
+    //     type: '',
+    //     createdAt: '2022-11-07T16:57:04.321Z',
+    //     updatedAt: '2022-11-07T16:57:04.321Z',
+    //     __v: 0
+    // },
+    // {
+    //     _id: '636938e63170ad59f2e00506',
+    //     name: 'testName7',
+    //     email: 'testEmail7',
+    //     password: 'testPassword',
+    //     emailToken: 'token',
+    //     gender: 'male',
+    //     isVerified: true,
+    //     type: '',
+    //     createdAt: '2022-11-07T16:57:10.582Z',
+    //     updatedAt: '2022-11-07T16:57:10.582Z',
+    //     __v: 0
+    // }
+];
+
+const fetchUsers = () => {
+    return new Promise((resolve, reject) => {
+        User.find((err, docs) => {
+            users = docs;
+        //   err ? reject(err) : resolve(docs);
+        });
+      });
+}
+
+fetchUsers();
+
+const initializePassport = require('../config/passport-config');
+initializePassport(
+    passport,
+    email => users.find(user => user.email === email),
+    id => users.find(user => user.id === id)
+);
+
+     //add user
+
 router.post('/add', (req, res) => {
     createuser(req.body).then((newUser) => {
         const token = jsonwebtoken.sign({
@@ -16,11 +67,12 @@ router.post('/add', (req, res) => {
     }).catch((err) => {
         console.log(err);
     })
-
 })
 
+
+
 //get all users
-router.get('/', (req, res) => {
+router.get('/',checkAuthenticated, (req, res) => {
     getAllUsers().then((docs) => {
         res.json(docs);
     }).catch((err) => {
@@ -70,9 +122,9 @@ router.delete('/:id', (req, res) => {
 })
 
 router.post('/update/:id', (req, res) => {
-    console.log('in router post')
-    console.log(req.body)
-    updateUserById(req.params.id, req.body)
+ console.log('in router post')
+ console.log(req.body)
+    updateUserById(req.params.id,req.body)
         .then((user) => {
             console.log('in router post in then')
             const token = jsonwebtoken.sign({
@@ -109,5 +161,35 @@ router.post('/getCode', (req, res) => {
     })
 })
 
+router.get('/api/login',
+ passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/api/login',
+    failureFlash: true
+})
+
+)
+
+router.delete('/api/logout', (req, res) => {
+    req.logout(function (err) {
+        if (err) { return next(err); }
+        res.redirect('/api/login');
+    })
+})
+
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+
+    res.redirect('/api/login')
+}
+
+function checkNotAutheticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/')
+    }
+    next()
+}
 
 module.exports = router;

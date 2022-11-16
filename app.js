@@ -10,6 +10,10 @@ const fileRouter = require('./routes/fileRoutes');
 const messageRouter = require('./routes/messageRoutes');
 const submissionRouter = require('./routes/submissionRouter');
 const uri = require('./config/db');
+const passport = require('passport');
+const flash = require('express-flash');
+const session = require('express-session');
+
 
 mongoose.connect(uri, (err) => {
     if (err)
@@ -25,6 +29,19 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }))
 
 app.use(cors());
+
+app.use(flash());
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+
+app.use(passport.session());
+
 
 app.use('/user', userRouter);//user routes
 
