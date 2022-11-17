@@ -5,34 +5,7 @@ const passport = require('passport');
 let User = require("../models/userModel");
 
 
-let users = [
-    // {
-    //     _id: '636938e03170ad59f2e00503',
-    //     name: 'testName6',
-    //     email: 'testEmail6',
-    //     password: 'testPassword',
-    //     emailToken: 'token',
-    //     gender: 'male',
-    //     isVerified: true,
-    //     type: '',
-    //     createdAt: '2022-11-07T16:57:04.321Z',
-    //     updatedAt: '2022-11-07T16:57:04.321Z',
-    //     __v: 0
-    // },
-    // {
-    //     _id: '636938e63170ad59f2e00506',
-    //     name: 'testName7',
-    //     email: 'testEmail7',
-    //     password: 'testPassword',
-    //     emailToken: 'token',
-    //     gender: 'male',
-    //     isVerified: true,
-    //     type: '',
-    //     createdAt: '2022-11-07T16:57:10.582Z',
-    //     updatedAt: '2022-11-07T16:57:10.582Z',
-    //     __v: 0
-    // }
-];
+let users = [];
 
 const fetchUsers = () => {
     return new Promise((resolve, reject) => {
@@ -162,14 +135,19 @@ router.post('/getCode', (req, res) => {
     })
 })
 
-router.get('/api/login',
- passport.authenticate('local', {
+router.post('/api/login', 
+
+ passport.authenticate(
+    'local', {
     successRedirect: '/',
     failureRedirect: '/api/login',
     failureFlash: true
-})
+    }
+    )
+    
+    );
 
-)
+
 
 router.delete('/api/logout', (req, res) => {
     req.logout(function (err) {

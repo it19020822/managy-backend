@@ -16,7 +16,7 @@ const userId = "636938e63170ad59f2e00506";
 router.post('/' , async (req, res, next) => {
 
     // change this when auth is implemented
-    if (isAllowed({ type: MANAGER })) {
+    if (isAllowed({ type: req.user.type })) {
 
         const form = formidable({ multiples: true });
 
@@ -52,7 +52,7 @@ router.post('/' , async (req, res, next) => {
 router.delete('/:id' , async (req, res, next) => {
 
     // change this when auth is implemented
-    if (isAllowed({ type: MANAGER })) {
+    if (isAllowed({ type: req.user.type })) {
         deleteDocument(req.params.id).then((result) => {
             res.json("successfully deleted!")
         }).catch((err) => {
@@ -65,10 +65,11 @@ router.delete('/:id' , async (req, res, next) => {
 });
 
 // endpoint to get files
-router.get('/' , async (req, res, next) => {
+router.get('/' , checkAuthenticated, async (req, res, next) => {
+    console.log('req: file get user ', req.user.type);
 
     // change this when auth is implemented
-    if (isAllowed({ type: MANAGER })) {
+    if (isAllowed({ type: req.user.type})) {
         getMyDocs(userId).then((result) => {
             res.json(result);
         }).catch((err) => {
