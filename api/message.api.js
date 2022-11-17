@@ -1,4 +1,6 @@
 const Message = require('../models/messageModel');
+// const decrypt = require('../utils/messageUtil');
+// const encrypt = require('../utils/messageUtil');
 
 function addMessage(payload) {
     
