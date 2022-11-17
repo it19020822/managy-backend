@@ -5,12 +5,15 @@ const { base64_encode } = require('../utils/fileUtil')
 const { upload, remove } = require('../api/uploader.api');
 const filePath = "documents";
 
-const { insertDocument } = require('../api/file.api');
+const { insertDocument, deleteDocument, getMyDocs } = require('../api/file.api');
 const { MANAGER } = require('../utils/constants');
 const { checkAuthenticated } = require('../utils/authUtil');
 
+const userId = "636938e63170ad59f2e00506";
+
 // endpoint to upload new files
-router.post('/' , checkAuthenticated, async (req, res, next) => {
+// router.post('/' , checkAuthenticated, async (req, res, next) => {
+router.post('/' , async (req, res, next) => {
 
     // change this when auth is implemented
     if (isAllowed({ type: MANAGER })) {
@@ -45,35 +48,31 @@ router.post('/' , checkAuthenticated, async (req, res, next) => {
 
 });
 
-// endpoint to upload new files
+// endpoint to delete a file
 router.delete('/:id' , async (req, res, next) => {
 
     // change this when auth is implemented
     if (isAllowed({ type: MANAGER })) {
+        deleteDocument(req.params.id).then((result) => {
+            res.json("successfully deleted!")
+        }).catch((err) => {
+            res.status(500).json(err);
+        });
+    }
+    else
+        res.status(401).json("Unauthorized!");
 
-        const form = formidable({ multiples: true });
+});
 
-        form.parse(req, (err, fields, files) => {
+// endpoint to get files
+router.get('/' , async (req, res, next) => {
 
-            if (err) {
-                console.log(err);
-                next(err);
-                return;
-            }
-
-            const base64File = base64_encode(files.file);
-
-            upload(base64File, filePath).then((doc) => {
-
-                insertDocument(doc, null).then((result) => {
-                    res.json("File upload successful!");
-                }).catch((err) => {
-                    res.status(500).json(err);
-                })
-            }).catch((error) => {
-                res.status(500).json(error);
-            });
-
+    // change this when auth is implemented
+    if (isAllowed({ type: MANAGER })) {
+        getMyDocs(userId).then((result) => {
+            res.json(result);
+        }).catch((err) => {
+            res.status(500).json(err);
         });
     }
     else
