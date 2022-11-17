@@ -12,4 +12,10 @@ function insertDocument(payload) {
     });
 }
 
+function deleteDocument(id) {
+    
+    
+}
+
+
 module.exports = { insertDocument };

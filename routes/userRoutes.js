@@ -46,6 +46,7 @@ const fetchUsers = () => {
 fetchUsers();
 
 const initializePassport = require('../config/passport-config');
+const { checkAuthenticated } = require('../utils/authUtil');
 initializePassport(
     passport,
     email => users.find(user => user.email === email),
@@ -72,7 +73,7 @@ router.post('/add', (req, res) => {
 
 
 //get all users
-router.get('/',checkAuthenticated, (req, res) => {
+router.get('/', checkAuthenticated , (req, res) => {
     getAllUsers().then((docs) => {
         res.json(docs);
     }).catch((err) => {
@@ -176,14 +177,6 @@ router.delete('/api/logout', (req, res) => {
         res.redirect('/api/login');
     })
 })
-
-function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-
-    res.redirect('/api/login')
-}
 
 function checkNotAutheticated(req, res, next) {
     if (req.isAuthenticated()) {
